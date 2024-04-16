@@ -1,11 +1,43 @@
 version: '3'
 services:
   db-svc:
-    image: "postgres" # use latest official postgres version
+    image: "postgres"
     environment:
-      - POSTGRES_PASSWORD=postgres     
+      - POSTGRES_PASSWORD=postgres
     volumes:
-      - database-data:/var/lib/postgresql/data/ # persist data even if container shuts down
+      - database-data:/var/lib/postgresql/data/
+
+  orders-service:
+    build:
+      context: ./ecomapp/src/orders
+    environment:
+      - DBHOST=db-svc
+      - DBPORT=5432
+      - DBUSER=postgres
+      - DBPASS=postgres
+      - DBNAME=postgres
+      - ORDERSERVICEHOST=orders-service
+    ports:
+      - "8001:8001"
+    depends_on:
+      - db-svc
+
+  users-service:
+    build:
+      context: ./ecomapp/src/users
+    environment:
+      - DBHOST=db-svc
+      - DBPORT=5432
+      - DBUSER=postgres
+      - DBPASS=postgres
+      - DBNAME=postgres
+      - ORDERSERVICEPORT=8001
+      - ORDERSERVICEHOST=orders-service  # Ensure ORDERSERVICEHOST is set to the correct value
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db-svc
 
 volumes:
-  database-data: 
+  database-data:
+
