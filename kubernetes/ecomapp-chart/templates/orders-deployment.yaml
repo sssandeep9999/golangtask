@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orders-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orders
+  template:
+    metadata:
+      labels:
+        app: orders
+    spec:
+      containers:
+      - name: orders-service
+        image: ecomapp-orders-service  # Replace with your actual image name
+        ports:
+        - containerPort: 8001
+        env:
+        - name: DBHOST
+          value: "db-svc"
+        - name: DBPORT
+          value: "5432"
+        - name: DBUSER
+          value: "postgres"
+        - name: DBPASS
+          value: "postgres"
+        - name: DBNAME
+          value: "postgres"
+
