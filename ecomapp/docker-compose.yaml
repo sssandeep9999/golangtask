@@ -9,7 +9,7 @@ services:
 
   orders-service:
     build:
-      context: ./ecomapp/src/orders
+      context: ./src/orders
     environment:
       - DBHOST=db-svc
       - DBPORT=5432
@@ -24,7 +24,7 @@ services:
 
   users-service:
     build:
-      context: ./ecomapp/src/users
+      context: ./src/users
     environment:
       - DBHOST=db-svc
       - DBPORT=5432
