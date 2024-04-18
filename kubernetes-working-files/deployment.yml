@@ -1,0 +1,50 @@
+# users-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: users-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: users
+  template:
+    metadata:
+      labels:
+        app: users
+    spec:
+      containers:
+      - name: users-service
+        image: satyasandeep901/ecomapp-users-service  # Replace with your actual image name
+        ports:
+        - containerPort: 8000
+        env:
+        - name: DBHOST
+          value: "db-svc"
+        - name: DBPORT
+          value: "5432"
+        - name: DBUSER
+          value: "postgres"
+        - name: DBPASS
+          value: "postgres"
+        - name: DBNAME
+          value: "postgres"
+        - name: ORDERSERVICEPORT
+          value: "8001"
+        - name: ORDERSERVICEHOST
+          value: "orders-service"  # Ensure ORDERSERVICEHOST is set to the correct value
+
+---
+# users-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: users-service
+spec:
+  selector:
+    app: users
+  ports:
+  - protocol: TCP
+    port: 8000
+    targetPort: 8000
+  type: NodePort

@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orders-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+      - name: orders-service
+        image: satyasandeep901/ecomapp-orders-service
+        ports:
+        - containerPort: 8001
+        env:
+        - name: DBHOST  # Set appropriate environment variables for database connection
+          value: "db-svc"
+        - name: DBPORT
+          value: "5432"
+        - name: DBUSER
+          value: "postgres"
+        - name: DBPASS
+          value: "postgres"
+        - name: DBNAME
+          value: "postgres"
+        - name: ORDERSERVICEHOST
+          value: "orders-service"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: orders-service
+spec:
+  selector:
+    app: api
+  ports:
+  - protocol: TCP
+    port: 8001
+    targetPort: 8001
+  type: NodePort
