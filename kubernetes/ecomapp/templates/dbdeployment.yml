@@ -1,0 +1,32 @@
+# Kubernetes StatefulSet for PostgreSQL
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: db-svc
+spec:
+  serviceName: db-svc
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db-svc
+  template:
+    metadata:
+      labels:
+        app: db-svc
+    spec:
+      containers:
+      - name: postgres
+        image: postgres
+        envFrom:
+        - configMapRef:
+            name: ecomapp-config
+        - secretRef:
+            name: ecomapp-secret
+        ports:
+          - containerPort: 5432
+        volumeMounts:
+          - name: database-data
+            mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: database-data
+          emptyDir: {}

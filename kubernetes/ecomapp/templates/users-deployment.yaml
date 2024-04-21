@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: users-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: users
+  template:
+    metadata:
+      labels:
+        app: users
+    spec:
+      containers:
+      - name: users-service
+        image: satyasandeep901/ecomapp-users-service  # Replace with your actual image name
+        ports:
+        - containerPort: 8000
+        envFrom:
+        - configMapRef:
+            name: ecomapp-config
+        - secretRef:
+            name: ecomapp-secret

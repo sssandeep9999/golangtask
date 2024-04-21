@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orders-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orders
+  template:
+    metadata:
+      labels:
+        app: orders
+    spec:
+      containers:
+      - name: orders-service
+        image: satyasandeep901/ecomapp-orders-service
+        ports:
+        - containerPort: 8001
+        envFrom:
+        - configMapRef:
+            name: ecomapp-config
+        - secretRef:
+            name: ecomapp-secret
